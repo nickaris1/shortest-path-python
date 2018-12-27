@@ -8,14 +8,16 @@ import tkinter as tk
 from tkinter import ttk
 #import networkx
 import networkx as nx
+import random as rn
 #=====================================================================================================================
 #=====================================================================================================================
 #=====================================================================================================================
 class MyApp():
-    def __init__(self,root,Graph):
+    def __init__(self,root):
+           
         self.root = root
         root.title("Graph")
-        self.Graph = Graph
+        self.Graph = None
         #------------------------------------------------------------------
         
         self.mf = tk.Frame(self.root)
@@ -30,10 +32,14 @@ class MyApp():
         self.f1.pack(side = 'left', fill='x')
         self.f2 = tk.Frame(self.mf1)
         self.f2.pack(side = 'right', fill='x')
-        self.f3 = tk.Frame(self.mf)
-        self.f3.pack(side = 'right', fill='x',expand=1)
 
+        self.mf2 = tk.Frame(self.mf)
+        self.mf2.pack(side = 'right', fill='x')
 
+        self.f3 = tk.Frame(self.mf2)
+        self.f3.pack(side = 'left', fill='x',expand=1)
+        self.f4 = tk.Frame(self.mf2)
+        self.f4.pack(side = 'right', fill='x',expand=1)
 
         label_sourcenode = tk.Label(self.f1,text="Start Node :",width=20)
         self.entry_SOURCE = tk.Entry(self.f2)
@@ -43,6 +49,12 @@ class MyApp():
         #------------------------------------------------------------------
         button_CalculateSR = tk.Button(self.f3,text="Calc SR",command=self.calculateShortestPath)
         button_clear = tk.Button(self.f3,text='Clear',command=self.addgraph)
+        #-------------------------------------------------------------------
+
+        self.entry_NODES = tk.Entry(self.f4)
+        button_NODES = tk.Button(self.f4,text='ENTER NUMBER OF NODES',command=self.stfu)
+
+
         #------------------------------------------------------------------
         label_sourcenode.pack(expand=1,side='top')
         self.entry_SOURCE.pack(expand=1,side='top')
@@ -50,12 +62,22 @@ class MyApp():
         self.entry_target.pack(expand=1,side='bottom')
         button_CalculateSR.pack(expand=1,side='top')
         button_clear.pack(expand=1,side='bottom')
+        self.entry_NODES.pack(expand=1,side='top')
+        button_NODES.pack(expand=1,side='bottom')
         #------------------------------------------------------------------
-        self.root.bind('<Return>',self.calculateShortestPathBind)
-        self.pos = nx.spring_layout(G)
-        self.addgraph()
+        try:
+            self.root.bind('<Return>',self.calculateShortestPathBind)
+            self.pos = nx.spring_layout(self.Graph)
+            self.addgraph()
+        except:
+            pass
     def calculateShortestPathBind(self,*args): self.calculateShortestPath()
     
+    def stfu(self):
+        numofnodes = int(self.entry_NODES.get())
+        self.Graph = creategraph(numofnodes)
+        self.pos = nx.spring_layout(self.Graph)
+        self.addgraph()
     def calculateShortestPath(self):
         source = int(self.entry_SOURCE.get())
         target = int(self.entry_target.get())
@@ -93,9 +115,10 @@ class MyApp():
 #=====================================================================================================================
 def neighbours(Graph):
     neighbours = {nodes: set() for nodes in set(Graph.nodes())}
-    for nbr, datadict in G.adj.items():
+    for nbr, datadict in Graph.adj.items():
         for i in datadict:
             neighbours[nbr].add((i,1/datadict[i]['weight']))
+    print(neighbours)
     return neighbours
 
 def dijkstra(Graph, source, dest,bol=True):
@@ -138,14 +161,40 @@ def dijkstra(Graph, source, dest,bol=True):
             pass
         return pathb
     return path
+
+
+
+
+def rn_graph_generator(x):
+    
+    tuplelist = []
+    for i in range(1,x):
+        a=(i, i+1, rn.random())    
+        tuplelist.append(a)
+    for c in range(rn.randint(1,10)):
+        for y in range(1,x):
+            b=rn.randint(y,x)
+            if b!=y and b!=y+1:
+                a1=(y, b, rn.random())
+                tuplelist.append(a1)
+    return tuplelist
+
+
+
 #=====================================================================================================================
-if __name__ == '__main__':
-    inf = float('inf')
+def creategraph(x):
     G = nx.Graph()
-    edges=[(5,1,5),(5,3,2),(5,2,5),(5,7,1),(5,6,4),(2,1,6),(2,4,3),(6,3,1),(4,8,7),(3,10,3),(10,9,5),(7,11,5),(11,13,5),(13,10,4),(8,12,8)]
+    edges = rn_graph_generator(x)
     for start, end, weight in edges:
         # You can attach any attributes you want when adding the edge
         G.add_edge(start, end, weight=weight)
+    return G
+
+if __name__ == '__main__':
+    inf = float('inf')
+
+    
     root = tk.Tk()  
-    myapp = MyApp(root,G)
+    myapp = MyApp(root)
+    
     root.mainloop()
