@@ -19,10 +19,21 @@ class MyApp():
         root.title("Graph")
         self.Graph = None
         #------------------------------------------------------------------
-        
+        self.startprogram()
+
+    def startprogram(self):
+        self.startframe = tk.Frame(root)
+        self.startframe.pack(fill='both',expand=1)
+        self.entry_NODES = tk.Entry(self.startframe)
+        button_NODES = tk.Button(self.startframe,text='ENTER NUMBER OF NODES',command=self.STARTstfu)
+        self.entry_NODES.pack(expand=1,fill='both',side='top')
+        button_NODES.pack(expand=1,fill='both',side='bottom')
+
+
+
+    def mainfunc(self):
         self.mf = tk.Frame(self.root)
         self.mf.pack(side='top',fill='x',expand=1)
-
 
         self.fg = tk.Frame(self.root)
         self.fg.pack(side='bottom',fill='both',expand=1)
@@ -71,19 +82,42 @@ class MyApp():
             self.addgraph()
         except:
             pass
+
+
+    def STARTstfu(self):
+        try:
+            numofnodes = int(self.entry_NODES.get())
+            self.Graph = creategraph(numofnodes)
+            self.pos = nx.spring_layout(self.Graph)
+            self.startframe.destroy()
+            self.mainfunc()
+            self.addgraph()
+
+            
+        except:
+            pass
+
+
+
     def calculateShortestPathBind(self,*args): self.calculateShortestPath()
     
     def stfu(self):
-        numofnodes = int(self.entry_NODES.get())
-        self.Graph = creategraph(numofnodes)
-        self.pos = nx.spring_layout(self.Graph)
-        self.addgraph()
+        try:
+            numofnodes = int(self.entry_NODES.get())
+            self.Graph = creategraph(numofnodes)
+            self.pos = nx.spring_layout(self.Graph)
+            self.addgraph()
+        except:
+            pass
+            
     def calculateShortestPath(self):
-        source = int(self.entry_SOURCE.get())
-        target = int(self.entry_target.get())
-        path = dijkstra(self.Graph,source,target)
-        self.addgraph(markpath=True,path=path)
-
+        try:            
+            source = int(self.entry_SOURCE.get())
+            target = int(self.entry_target.get())
+            path = dijkstra(self.Graph,source,target)
+            self.addgraph(markpath=True,path=path)
+        except:
+            pass
     def addgraph(self,markpath=False,path=None):
         try:
             for w in self.fg.winfo_children():
@@ -197,4 +231,4 @@ if __name__ == '__main__':
     root = tk.Tk()  
     myapp = MyApp(root)
     
-    root.mainloop()
+root.mainloop()
