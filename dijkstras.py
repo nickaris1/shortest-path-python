@@ -42,10 +42,10 @@ class MyApp():
         self.f1 = tk.Frame(self.mf1)
         self.f1.pack(side = 'left', fill='x')
         self.f2 = tk.Frame(self.mf1)
-        self.f2.pack(side = 'right', fill='x')
+        self.f2.pack(side = 'left', fill='x')
 
         self.mf2 = tk.Frame(self.mf)
-        self.mf2.pack(side = 'right', fill='x')
+        self.mf2.pack(side = 'right', fill='x',expand=1)
 
         self.f3 = tk.Frame(self.mf2)
         self.f3.pack(side = 'left', fill='x',expand=1)
